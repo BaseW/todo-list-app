@@ -1,0 +1,18 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Allow only authenticated content owners access
+		match /projects/{projectId}/customers/{customerId}/public/state {    
+      allow read: if request.auth != null && request.auth.uid == customerId
+    }
+
+    match /operator/{operatorId}/connecting {
+      allow read: if request.auth != null && request.auth.uid == operatorId
+    }
+  }
+match /{document=**} {
+      allow read, write: if false;
+    }
+}
+
